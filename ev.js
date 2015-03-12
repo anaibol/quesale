@@ -59,9 +59,8 @@ function runQuery(query, cb) {
     }
     var result;
     if (res.data && res.data.length) {
-        result = res.data;
-      }
-    else {
+      result = res.data;
+    } else {
       result = false;
     }
     cb(result);
@@ -69,7 +68,7 @@ function runQuery(query, cb) {
 }
 
 function save(ev, cb) {
-      if (ev) {
+  if (ev) {
     Events.insert(ev, function(err, newEv) {
       if (err) {
         console.log(err);
@@ -121,24 +120,29 @@ function fetchMultiple(eids, term, cb) {
               // for (j = 0; j < attendings.length; j++) {
               //   ev.attending.push(parseInt(attendings[j].uid));
               // }
-              ev.query = term;
-                    ev = normalize(ev);
-                      ev.saved = new Date();
-                      ev = normalize(ev);
-                      save(ev, function(newEv) {
-                        console.log(newEv.query + ': ' + newEv.name);
-                      });
-            }
-          else if(exists)
-          {
-            ev = normalize(ev);
-            //ev.updated = new Date();
-            //getAttendings(ev.eid, function(attendings) {
+
+              if (ev.venue.country === 'Argentina') {
+                ev.query = term;
+                ev = normalize(ev);
+                ev.saved = new Date();
+                ev = normalize(ev);
+                save(ev, function(newEv) {
+                  console.log(newEv.query + ': ' + newEv.name);
+                });
+              }
+            } else if (exists) {
+              ev = normalize(ev);
+              //ev.updated = new Date();
+              //getAttendings(ev.eid, function(attendings) {
               //ev.attending = attendings;
-          Events.update({eid: ev.eid}, {$set: ev});
-            //});
-          }
-        });
+              Events.update({
+                eid: ev.eid
+              }, {
+                $set: ev
+              });
+              //});
+            }
+          });
         });
         cb(evs);
       } else {
@@ -315,7 +319,7 @@ function update(eid, cb) {
       eid: ev.eid
     }, {
       $set: ev
-    }).error(function(err){
+    }).error(function(err) {
       console.log(err);
     });
     cb(ev);
@@ -341,8 +345,8 @@ function slug(str) {
   }
 
   str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
-    .replace(/\s+/g, '-') // collapse whitespace and replace by -
-    .replace(/-+/g, '-'); // collapse dashes
+  .replace(/\s+/g, '-') // collapse whitespace and replace by -
+  .replace(/-+/g, '-'); // collapse dashes
 
   return str;
 }
@@ -368,7 +372,7 @@ function normalize(ev) {
 
   ev.price = getPrice(ev);
 
-  ev.multi_date = Mul.getMultiDates(ev);
+  // ev.multi_date = Mul.getMultiDates(ev);
 
   ev.venue.coord = {
     lng: ev.venue.longitude,
@@ -377,40 +381,21 @@ function normalize(ev) {
 
   delete ev.venue.latitude;
   delete ev.venue.longitude;
-    if (!ev.venue || !ev.venue.coord || !ev.venue.coord.lng || !ev.venue.coord.lat) {
-      var i = 0;
-      while (global.keywords2[i])
-      {
-        if (ev.query === global.keywords2[i])
-        {
-          var venue = {
-              city: ev.query,
-              country: global.coord[i].country,
-              street: "",
-              zip: "",
-              coord: {
-                lng: global.coord[i].lng,
-                lat: global.coord[i].lat
-              }
-          }
+  if (!ev.venue || !ev.venue.coord || !ev.venue.coord.lng || !ev.venue.coord.lat) {
+    if (!venue) {
+      var venue = {
+        city: "City",
+        country: "Antarctique",
+        street: "Street",
+        zip: "99999",
+        coord: {
+          lng: -135,
+          lat: -82.862751
         }
-        ++i;
-      }
-        if (!venue)
-        {
-          var venue = {
-            city: "City",
-            country: "Antarctique",
-            street: "Street",
-            zip: "99999",
-            coord: {
-              lng: -135,
-              lat: -82.862751
-            }
-          };
-        }
-      ev.venue = venue;
+      };
     }
+    ev.venue = venue;
+  }
   // delete ev.pic_cover;
 
   // if (ev.place.indexOf('porto')) {
@@ -441,17 +426,16 @@ function getAttendings(eid, cb) {
     if (err) {
       console.log(err);
     }
-    if (res && res.data)
-    {
+    if (res && res.data) {
       var att = res.data;
 
       if (att) {
         attendings = [];
 
-      for (var i = att.length - 1; i >= 0; i--) {
-        attendings.push(parseInt(att[i].id));
-      }
-      cb(attendings);
+        for (var i = att.length - 1; i >= 0; i--) {
+          attendings.push(parseInt(att[i].id));
+        }
+        cb(attendings);
       }
     }
   });
@@ -675,13 +659,11 @@ function getFestival(ev) {
 
     if (n > 0) {
       festival = true;
-      if (words[i] == "cours " || words[i] == "class ")
-      {
+      if (words[i] == "cours " || words[i] == "class ") {
         words[i] = "class";
         alreadyin = true;
       }
-      if (alreadyin == false)
-      {
+      if (alreadyin == false) {
         ev.categorie.push(words[i]);
       }
     }
@@ -707,14 +689,12 @@ function getPrice(ev) {
   if (match) {
     var numbers = match.join().removeAll("$").removeAll("£").removeAll("€").split(',');
     var min = numbers.min();
-    if (min <= 2 && numbers.length > 1)
-    {
+    if (min <= 2 && numbers.length > 1) {
       var i = 0;
       var j = 0;
       var new_numbers = [];
-      while (numbers[i])
-      {
-        if (numbers[i] != min){
+      while (numbers[i]) {
+        if (numbers[i] != min) {
           new_numbers[j] = parseInt(numbers[i]);
           ++j;
         }
