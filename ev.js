@@ -327,7 +327,6 @@ function update(eid, cb) {
 }
 
 function updateMultiple(eids) {
-  console.log(eids);
   fetchMultiple(eids, '', function(eves) {
     var eids = [];
   });
@@ -353,13 +352,13 @@ function slug(str) {
 
 function normalize(ev) {
   ev.eid = parseInt(ev.eid);
-  ev.categorie = [];
+
   ev.start_time2 = ev.start_time;
   ev.end_time2 = ev.end_time;
   ev.update_time2 = ev.update_time;
   var NightLife = new Date(ev.start_time).getHours();
-  if (NightLife >= 21 || NightLife < 5)
-    ev.categorie.push("NightLife");
+  // if (NightLife >= 21 || NightLife < 5)
+  //   ev.categorie.push("NightLife");
   ev.start_time = new Date(ev.start_time);
   ev.end_time = new Date(ev.end_time);
   ev.update_time = new Date(ev.update_time);
@@ -368,7 +367,7 @@ function normalize(ev) {
 
   ev.tags = getTags(ev);
 
-  ev = getFestival(ev);
+  // ev = getFestival(ev);
 
   ev.price = getPrice(ev);
 
@@ -381,6 +380,7 @@ function normalize(ev) {
 
   delete ev.venue.latitude;
   delete ev.venue.longitude;
+
   if (!ev.venue || !ev.venue.coord || !ev.venue.coord.lng || !ev.venue.coord.lat) {
     if (!venue) {
       var venue = {
@@ -643,34 +643,34 @@ function getTags(ev) {
   return tags;
 }
 
-function getFestival(ev) {
-  var festival = false;
+// function getFestival(ev) {
+//   var festival = false;
 
-  var name = ev.name;
-  var desc = ev.description;
+//   var name = ev.name;
+//   var desc = ev.description;
 
-  var text = name + ' ' + desc;
-  text = text.toLowerCase();
-  var words = ["congress", "festival", "concert", "cours ", "class "];
-  var alreadyin = false;
-  for (var i = 0; i < words.length; i++) {
-    var str = words[i];
-    var n = text.search(str);
+//   var text = name + ' ' + desc;
+//   text = text.toLowerCase();
+//   var words = ["congress", "festival", "concert", "cours ", "class "];
+//   var alreadyin = false;
+//   for (var i = 0; i < words.length; i++) {
+//     var str = words[i];
+//     var n = text.search(str);
 
-    if (n > 0) {
-      festival = true;
-      if (words[i] == "cours " || words[i] == "class ") {
-        words[i] = "class";
-        alreadyin = true;
-      }
-      if (alreadyin == false) {
-        ev.categorie.push(words[i]);
-      }
-    }
-  }
+//     if (n > 0) {
+//       festival = true;
+//       if (words[i] == "cours " || words[i] == "class ") {
+//         words[i] = "class";
+//         alreadyin = true;
+//       }
+//       if (alreadyin == false) {
+//         ev.categorie.push(words[i]);
+//       }
+//     }
+//   }
 
-  return ev;
-}
+//   return ev;
+// }
 
 function getPrice(ev) {
   var desc = ev.name + ' ' + ev.description;

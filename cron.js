@@ -21,7 +21,7 @@ graph.setAccessToken(accessToken);
 
 var users = [];
 
-global.keywords = ['vicente lopez', 'san isidro', 'buenos aires', 'palermo', 'belgrano', 'villa urquiza', 'colegiales', 'chacarita', 'villa crespo', 'rock', 'blues', 'metal'];
+global.keywords = ['vicente lopez', 'jose c paz', 'acassuso', 'don torcuato', 'balvanera', 'victoria', 'san miguel', 'tigre', 'martinez', 'la lucila', 'olivos', 'san isidro', 'buenos aires', 'palermo', 'belgrano', 'villa urquiza', 'colegiales', 'chacarita', 'villa crespo', 'rock', 'blues', 'metal', 'jazz', 'tango', 'swing', 'salsa', 'bachata', 'merengue', 'saavedra', 'caballito', 'san cristobal', 'moron', 'san justo', 'pacheco', 'villa ortuzar'];
 
 // function starttime2(){
 //   var date = new Date();
@@ -65,6 +65,22 @@ var job = new cronJob('*/30 * * * *', function() {
 fetchEventsFromKeywords();
 // updatePrioritaires();
 // updatePopular();
+
+var send = require('./gcm');
+
+var job = new cronJob('30 17 * * 1,2,3,4,5,6,7', function() {
+
+  Events.findOne({}, {
+    skip: random(1, 1000)
+  }, function(err, ev) {
+    send.send(ev);
+  });
+}, null, true);
+
+
+function random(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
 
 // function updateNoCover(){
 //   console.log('updatepic');
