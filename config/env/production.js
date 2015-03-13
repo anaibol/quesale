@@ -1,8 +1,8 @@
 module.exports = {
-  db: 'mongodb://admin:alsacelorraine@candidate.43.mongolayer.com:10086/quesale',
+  db: 'mongodb://localhost/quesale',
   port: 3000,
   app: {
-    name: 'quesale - Production',
+    name: 'QueSale - Production',
     accessToken: '439472799532734|q2yZ3bxPv8magGScTA672Ab-x7Y'
   },
   facebook: {
@@ -10,10 +10,10 @@ module.exports = {
     clientSecret: '6e940b23fdbf539939dffbe479678623',
     callbackURL: 'https://quesale.com/auth/facebook/callback'
   },
-  stripe: {
-    publicKey: 'pk_live_idzgWiVeCmU0u9XChNm6IFlw',
-    secretKey: 'sk_live_EdgPczh1AIUbCC14GIwDJxoe'
-  }
+  // stripe: {
+  //   publicKey: 'pk_live_idzgWiVeCmU0u9XChNm6IFlw',
+  //   secretKey: 'sk_live_EdgPczh1AIUbCC14GIwDJxoe'
+  // }
   /*,
   twitter: {
     clientID: 'CONSUMER_KEY',
