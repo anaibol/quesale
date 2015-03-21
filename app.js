@@ -89,25 +89,27 @@ app.use(favicon(publicDir + 'favicon.ico'));
 app.use(serveStatic(publicDir));
 app.use(serveStatic(distDir));
 
-var fs = require('fs');
-var walk = function(path) {
-  fs.readdirSync(path).forEach(function(file) {
-    var newPath = path + '/' + file;
-    var stat = fs.statSync(newPath);
-    if (stat.isFile()) {
-      if (/(.*)\.(js$)/.test(file)) {
-        require(newPath)(app, passport, db);
-      }
-      // We skip the app/routes/middlewares directory as it is meant to be
-      // used and shared by routes as further middlewares and is not a 
-      // route by itself
-    } else if (stat.isDirectory() && file !== 'middlewares') {
-      walk(newPath);
-    }
-  });
-};
+require(routesDir + 'api/events')
 
-walk(routesDir);
+// var fs = require('fs');
+// var walk = function(path) {
+//   fs.readdirSync(path).forEach(function(file) {
+//     var newPath = path + '/' + file;
+//     var stat = fs.statSync(newPath);
+//     if (stat.isFile()) {
+//       if (/(.*)\.(js$)/.test(file)) {
+//         require(newPath)(app, passport, db);
+//       }
+//       // We skip the app/routes/middlewares directory as it is meant to be
+//       // used and shared by routes as further middlewares and is not a 
+//       // route by itself
+//     } else if (stat.isDirectory() && file !== 'middlewares') {
+//       walk(newPath);
+//     }
+//   });
+// };
+
+// walk(routesDir);
 
 // app.use(function(err, req, res, next) {
 //   // Treat as 404
