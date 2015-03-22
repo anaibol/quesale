@@ -68,7 +68,7 @@ fetchEventsFromKeywords();
 
 var send = require('./gcm');
 
-var job = new cronJob('30 17 * * 1,2,3,4,5,6,7', function() {
+var job = new cronJob('0 0 18 1/1 * ? *', function() {
 
   Events.findOne({}, {
     skip: random(1, 1000)

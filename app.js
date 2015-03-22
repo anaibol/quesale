@@ -25,7 +25,7 @@ global.middlewaresDir = routesDir + 'middlewares/';
 global.viewsDir = rootDir + 'views/';
 global.controllersDir = rootDir + 'controllers/';
 
-// Initializing system variables 
+// Initializing system variables
 global.config = require(configDir + '/env/' + process.env.NODE_ENV + '.js');
 
 var app = express();
@@ -89,7 +89,7 @@ app.use(favicon(publicDir + 'favicon.ico'));
 app.use(serveStatic(publicDir));
 app.use(serveStatic(distDir));
 
-require(routesDir + 'api/events')
+require(routesDir + 'api/events')(app, passport, db);
 
 // var fs = require('fs');
 // var walk = function(path) {
@@ -101,7 +101,7 @@ require(routesDir + 'api/events')
 //         require(newPath)(app, passport, db);
 //       }
 //       // We skip the app/routes/middlewares directory as it is meant to be
-//       // used and shared by routes as further middlewares and is not a 
+//       // used and shared by routes as further middlewares and is not a
 //       // route by itself
 //     } else if (stat.isDirectory() && file !== 'middlewares') {
 //       walk(newPath);
@@ -146,9 +146,3 @@ console.log('Express app started on port ' + port);
 
 // Expose app
 exports = module.exports = app;
-
-
-
-
-
-
