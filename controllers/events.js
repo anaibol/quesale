@@ -152,49 +152,48 @@ exports.get = function(req, res) {
     options.sort = sort;
   }
 
-  var tags = params.tags;
-  var realTags = [];
+  // var tags = params.tags;
+  // var realTags = [];
+  // if (tags) {
+  //   tags = tags.split(',');
 
-  if (tags) {
-    tags = tags.split(',');
+  //   tags.forEach(function(tag) {
+  //     switch (tag) {
+  //       case 'popular':
+  //         query.attending_count = {
+  //           $gt: 50
+  //         };
 
-    tags.forEach(function(tag) {
-      switch (tag) {
-        case 'popular':
-          query.attending_count = {
-            $gt: 50
-          };
+  //         break;
 
-          break;
+  //       case 'festival':
+  //         query.festival = true;
 
-        case 'festival':
-          query.festival = true;
+  //         break;
 
-          break;
+  //       case 'promoted':
+  //         query.promoted = true;
 
-        case 'promoted':
-          query.promoted = true;
+  //         break;
 
-          break;
+  //       case 'free':
+  //         query["price.num"] = 0;
 
-        case 'free':
-          query["price.num"] = 0;
+  //         break;
 
-          break;
+  //       default:
+  //         realTags.push(tag);
 
-        default:
-          realTags.push(tag);
+  //         break;
+  //     }
+  //   });
 
-          break;
-      }
-    });
-
-    if (realTags.length) {
-      query.tags = {
-        $all: realTags
-      };
-    }
-  }
+  //   if (realTags.length) {
+  //     query.tags = {
+  //       $all: realTags
+  //     };
+  //   }
+  // }
 
   // switch (params.tag) {
   //   case 'user':
