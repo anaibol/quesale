@@ -83,15 +83,15 @@ exports.get = function(req, res) {
   }
 
   var skip = params.skip || 0;
-  var sortBy = params.sortBy || 'start_time';
+  var sortBy = params.sortBy || 'proximity';
   var sortOrder = params.sortOrder || 1;
   var since = params.since || 0;
   var until = params.until || 0;
 
-  if (params.sortBy === 'popularity') {
-    sortBy = 'attending_count';
-    sortOrder = -1;
-  }
+  // if (params.sortBy === 'popularity') {
+  //   sortBy = 'attending_count';
+  //   sortOrder = -1;
+  // }
 
   var sortStr = '{"' + sortBy + '" :' + sortOrder + '}';
   var sort = JSON.parse(sortStr);
@@ -116,13 +116,21 @@ exports.get = function(req, res) {
     };
   }
 
-  if (params.country) {
-    query['venue.country'] = {
-      $regex: new RegExp(params.country, "i")
-    };
+  query['venue.street'] = {
+    $exists: true
+  };
 
-    delete query['venue.coord'];
-  }
+  // query.attending = {
+  //   $size: 1
+  // };
+
+  // if (params.country) {
+  //   query['venue.country'] = {
+  //     $regex: new RegExp(params.country, "i")
+  //   };
+
+  //   delete query['venue.coord'];
+  // }
 
   // var query1 = clone(query);
   // var query2 = clone(query);
@@ -148,9 +156,9 @@ exports.get = function(req, res) {
     }
   };
 
-  if (params.sortBy !== 'proximity') {
-    options.sort = sort;
-  }
+  // if (params.sortBy !== 'proximity') {
+  //   options.sort = sort;
+  // }
 
   // var tags = params.tags;
   // var realTags = [];
@@ -304,29 +312,32 @@ exports.get = function(req, res) {
   // ]};
 
   Events.find(query, options, function(err, data) {
-    if (!data || data.length < 1) {
-      query['venue.coord'] = {
-        $near: {
-          $geometry: {
-            type: "Point",
-            coordinates: [parseFloat(params.lng), parseFloat(params.lat)]
-          },
-          $maxDistance: 100000
-        }
-      };
-      Events.find(query, options, function(err, data) {
-        if (err) {
-          console.log(err);
-          res.render('error', {
-            status: 500
-          });
-        } else {
-          res.json(data);
-        }
-      });
-    } else {
-      res.json(data);
-    }
+    // if (!data || data.length < 1) {
+    //   query['venue.coord'] = {
+    //     $near: {
+    //       $geometry: {
+    //         type: "Point",
+    //         coordinates: [parseFloat(params.lng), parseFloat(params.lat)]
+    //       },
+    //       $maxDistance: 100000
+    //     }
+    //   };
+    //   Events.find(query, options, function(err, data) {
+    //     if (err) {
+    //       console.log(err);
+    //       res.render('error', {
+    //         status: 500
+    //       });
+    //     } else {
+    //       res.json(data);
+    //     }
+    //   });
+    // } else {
+
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.json(data);
+    // }
   });
   //});
 };
@@ -344,6 +355,8 @@ exports.getOne = function(req, res) {
         status: 500
       });
     } else {
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
       res.json(ev);
       // Ev.update(req.params.eid, function(ev) {});
     }

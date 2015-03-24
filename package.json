@@ -18,6 +18,7 @@
     "express-session": "^1.10.2",
     "fbgraph": "^0.3.0",
     "jade": "^1.9.2",
+    "lodash": "^3.5.0",
     "method-override": "^2.3.1",
     "moment": "^2.9.0",
     "monk": "^0.9.1",

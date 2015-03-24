@@ -14,7 +14,60 @@ var Locations = db.get('locations');
 
 var graph = require('fbgraph');
 
-var accessToken = 'CAAGPsrwaxr4BANogLqZBhA82kFXn8ZBLHTYxgdrzDYd2ByT5ns5AbLqI01naTIDVBdWth94BIVrAZBtllc8ZB3yVBc5O4bZBuQkjpXwvdRUjKRaPf4fdrH7gIHyh1K4m2jZAQPZAdDbnEE3p0WpX8K7FQFKZAu1myErwIlTzAWlpkj4HNDcKBZAgQPQ4oBYsOB529oY0qRZBDusyweP6AavcMK';
+var _ = require('lodash');
+
+// _.mixin({
+//   compactObject: function(o) {
+//     var clone = _.clone(o);
+//     _.each(clone, function(v, k) {
+//       if (!v) {
+//         delete clone[k];
+//       }
+//     });
+//     return clone;
+//   }
+// });
+
+function deepCompact(object) {
+  var oType = typeof object;
+  if (object !== null && oType != 'undefined') {
+    if ((object instanceof Object || Array.isArray(object)) && !(object instanceof Date)) {
+      var ret;
+      if (object instanceof Array) {
+        ret = object.map(function(val, key, col) {
+          return deepCompact(val);
+        });
+        if (ret.length > 0) {
+          return ret;
+        }
+      } else {
+        var keys = Object.keys(object);
+        ret = keys.reduce(function(acc, val, key) {
+          var tmp = deepCompact(object[val]);
+          if (tmp) {
+            acc[val] = tmp;
+          }
+          return acc;
+        }, {});
+        if (typeof ret == 'object' && Object.keys(ret).length > 0) {
+          return ret;
+        }
+      }
+    } else if (oType == 'string' || oType == 'boolean' || oType == 'number') {
+      return object;
+    } else if (object instanceof Date) {
+      return String(object);
+    } else if (!(object instanceof Object) && !(object instanceof Array)) {
+      return typeof object;
+    }
+  }
+}
+
+_.mixin({
+  deepCompact: deepCompact
+});
+
+var accessToken = 'CAAKvXHZBBCIUBAKxziBs2XqpwBvjLF7VZBxuLaJrzw0rMt2vmgSUWOODJ8CjcMbMJumHKrppPD5wxVkCslNSUJ2ednqyC797EpOjbzPRj8g0iuicEZCyu0KFY7zyFwZBRZCeKzVMOE3gzojysuyWrkeZBKYJw8eFmXz0of73TXqnLVZCV9jgbYIgJDa5EX65sE9HApsFq7fx7Ff9fchrQHM';
 graph.setAccessToken(accessToken);
 
 //var keywords = ['salsa', 'bachata', 'kizomba', 'porto', 'cubaine', 'cubana', 'semba', 'samba', 'merengue', 'tango', 'lambazouk', 'zouk', 'regueton', 'reggaeton', 'kuduru', 'chachacha', 'zumba']; //'suelta'
@@ -173,7 +226,7 @@ function fetchMultiple(eids, term, cb) {
 //         var images = data[2].fql_result_set;
 //         // var creators = data[3].fql_result_set;
 
-//         for (i = 0; i < evs.length; i++) {           
+//         for (i = 0; i < evs.length; i++) {
 //           ev = evs[i];
 
 //           ev.attending = [];
@@ -365,7 +418,7 @@ function normalize(ev) {
 
   ev.slug = slug(ev.name.toLowerCase());
 
-  ev.tags = getTags(ev);
+  // ev.tags = getTags(ev);
 
   // ev = getFestival(ev);
 
@@ -382,20 +435,20 @@ function normalize(ev) {
   delete ev.venue.longitude;
 
   if (!ev.venue || !ev.venue.coord || !ev.venue.coord.lng || !ev.venue.coord.lat) {
-    if (!venue) {
-      var venue = {
-        city: "City",
-        country: "Antarctique",
-        street: "Street",
-        zip: "99999",
-        coord: {
-          lng: -135,
-          lat: -82.862751
-        }
-      };
-    }
-    ev.venue = venue;
+    ev.venue = {
+      city: "City",
+      country: "Antarctique",
+      street: "Street",
+      zip: "99999",
+      coord: {
+        lng: -135,
+        lat: -82.862751
+      }
+    };
   }
+
+  ev = _.deepCompact(ev);
+
   // delete ev.pic_cover;
 
   // if (ev.place.indexOf('porto')) {
@@ -623,25 +676,25 @@ function getFromUser(userName, accessToken, userLoggedIn, cb) {
 //   });
 // }
 
-function getTags(ev) {
-  var tags = [];
+// function getTags(ev) {
+//   var tags = [];
 
-  var name = ev.name;
-  var desc = ev.description;
-  var query = ev.query;
-  var text = name + ' ' + desc + ' ' + ev.query;
-  text = text.toLowerCase();
+//   var name = ev.name;
+//   var desc = ev.description;
+//   var query = ev.query;
+//   var text = name + ' ' + desc + ' ' + ev.query;
+//   text = text.toLowerCase();
 
-  for (var i = 0; i < global.keywords.length; i++) {
-    var str = global.keywords[i].toLowerCase();
-    var n = text.search(str);
+//   for (var i = 0; i < global.keywords.length; i++) {
+//     var str = global.keywords[i].toLowerCase();
+//     var n = text.search(str);
 
-    if (n > 0) {
-      tags.push(global.keywords[i].toLowerCase());
-    }
-  }
-  return tags;
-}
+//     if (n > 0) {
+//       tags.push(global.keywords[i].toLowerCase());
+//     }
+//   }
+//   return tags;
+// }
 
 // function getFestival(ev) {
 //   var festival = false;
@@ -734,7 +787,7 @@ function getPrice(ev) {
 function getPriceFromFullPrice(price) {
   var number = price.removeAll("$").removeAll("£").removeAll("€").split(',');
 
-  var price = {
+  price = {
     full: price,
     num: number
   };
@@ -775,7 +828,7 @@ module.exports.save = save;
 module.exports.update = update;
 module.exports.updateMultiple = updateMultiple;
 module.exports.runQuery = runQuery;
-module.exports.getTags = getTags;
+// module.exports.getTags = getTags;
 module.exports.getPrice = getPrice;
 module.exports.getPriceFromFullPrice = getPriceFromFullPrice;
 // module.exports.crawlPage = crawlPage;

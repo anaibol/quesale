@@ -21,7 +21,7 @@ graph.setAccessToken(accessToken);
 
 var users = [];
 
-global.keywords = ['vicente lopez', 'jose c paz', 'acassuso', 'don torcuato', 'balvanera', 'victoria', 'san miguel', 'tigre', 'martinez', 'la lucila', 'olivos', 'san isidro', 'buenos aires', 'palermo', 'belgrano', 'villa urquiza', 'colegiales', 'chacarita', 'villa crespo', 'rock', 'blues', 'metal', 'jazz', 'tango', 'swing', 'salsa', 'bachata', 'merengue', 'saavedra', 'caballito', 'san cristobal', 'moron', 'san justo', 'pacheco', 'villa ortuzar', 'festival', 'fiesta', 'curso', 'seminario', 'meetup', 'conferencia', 'charla', 'capital federal', 'clase', 'entrada', 'gratis', 'gratuito', 'gratuita', 'aire libre'];
+global.keywords = ['vicente lopez', 'jose c paz', 'acassuso', 'don torcuato', 'balvanera', 'victoria', 'san miguel', 'tigre', 'martinez', 'la lucila', 'olivos', 'san isidro', 'buenos aires', 'palermo', 'belgrano', 'villa urquiza', 'colegiales', 'chacarita', 'villa crespo', 'rock', 'blues', 'metal', 'jazz', 'tango', 'swing', 'salsa', 'bachata', 'merengue', 'saavedra', 'caballito', 'san cristobal', 'moron', 'san justo', 'pacheco', 'villa ortuzar', 'festival', 'fiesta', 'curso', 'seminario', 'meetup', 'conferencia', 'charla', 'capital federal', 'clase', 'entrada', 'gratis', 'gratuito', 'gratuita', 'aire libre', 'concierto', 'recital'];
 
 // function starttime2(){
 //   var date = new Date();
@@ -141,7 +141,7 @@ function random(min, max) {
 //   }).success(function(evs){
 //     console.log("Il y a >>>" + evs.length + "<<< évènement multi_date updatés !")
 //     evs.forEach(function(ev){
-//       ev.multi_date = Mul.getMultiDates(ev);    
+//       ev.multi_date = Mul.getMultiDates(ev);
 //     });
 //     var eids = [];
 //     evs.forEach(function(ev) {
@@ -169,7 +169,7 @@ function random(min, max) {
 //   }).success(function(evs){
 //     console.log("Il y a >>>" + evs.length + "<<< évènement multi_date updatés !")
 //     evs.forEach(function(ev){
-//       ev.multi_date = Mul.getMultiDates(ev);    
+//       ev.multi_date = Mul.getMultiDates(ev);
 //     });
 //     var eids = [];
 //     evs.forEach(function(ev) {

@@ -1,5 +1,6 @@
 module.exports = {
-  db: "mongodb://localhost/quesale-dev",
+  // db: "mongodb://localhost/quesale-dev",
+  db: "mongodb://famosas.tv/quesale",
   port: 3000,
   app: {
     name: "Quesale - Development",
