@@ -82,6 +82,8 @@ exports.get = function(req, res) {
     limit = 30;
   }
 
+  limit = 10000;
+
   var skip = params.skip || 0;
   var sortBy = params.sortBy || 'proximity';
   var sortOrder = params.sortOrder || 1;

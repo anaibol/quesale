@@ -9,20 +9,20 @@ var Events = db.get('events');
 // var Mul = require('./services/multi_date.js');
 // var Upd = require('./services/update.js');
 
-var Events = db.get('events');
 var Users = db.get('users');
 var Creators = db.get('creators');
 var Locations = db.get('locations');
 
 var graph = require('fbgraph');
 
-var accessToken = 'CAAKvXHZBBCIUBAKxziBs2XqpwBvjLF7VZBxuLaJrzw0rMt2vmgSUWOODJ8CjcMbMJumHKrppPD5wxVkCslNSUJ2ednqyC797EpOjbzPRj8g0iuicEZCyu0KFY7zyFwZBRZCeKzVMOE3gzojysuyWrkeZBKYJw8eFmXz0of73TXqnLVZCV9jgbYIgJDa5EX65sE9HApsFq7fx7Ff9fchrQHM';
+var accessToken = 'CAAXezV0WnNwBAInKn4h1lLXpFMVqsv488Tp2UOTqLukZB4tHTlT5azgX1vYc85hHVz5qr6ed82g0B3Ng9akoy7AiDsyDXaWpOjVVsCRrqCeekt6RxXV5uPdu6NWzxq6ZBbQHyICj9k99DoRX2wdr3oJta2GoW0ZCQBRHkCrWdsw5QblY300FmCDf1xLRvybZCqdNIVfuSgZDZD';
 graph.setAccessToken(accessToken);
 
 var users = [];
 
-global.keywords = ['vicente lopez', 'jose c paz', 'acassuso', 'don torcuato', 'balvanera', 'victoria', 'san miguel', 'tigre', 'martinez', 'la lucila', 'olivos', 'san isidro', 'buenos aires', 'palermo', 'belgrano', 'villa urquiza', 'colegiales', 'chacarita', 'villa crespo', 'rock', 'blues', 'metal', 'jazz', 'tango', 'swing', 'salsa', 'bachata', 'merengue', 'saavedra', 'caballito', 'san cristobal', 'moron', 'san justo', 'pacheco', 'villa ortuzar', 'festival', 'fiesta', 'curso', 'seminario', 'meetup', 'conferencia', 'charla', 'capital federal', 'clase', 'entrada', 'gratis', 'gratuito', 'gratuita', 'aire libre', 'concierto', 'recital'];
-
+// global.keywords = ['vicente lopez', 'jose c paz', 'acassuso', 'don torcuato', 'balvanera', 'victoria', 'san miguel', 'tigre', 'martinez', 'la lucila', 'olivos', 'san isidro', 'buenos aires', 'palermo', 'belgrano', 'villa urquiza', 'colegiales', 'chacarita', 'villa crespo', 'rock', 'blues', 'metal', 'jazz', 'tango', 'swing', 'salsa', 'bachata', 'merengue', 'saavedra', 'caballito', 'san cristobal', 'moron', 'san justo', 'pacheco', 'villa ortuzar', 'festival', 'fiesta', 'curso', 'seminario', 'meetup', 'conferencia', 'charla', 'capital federal', 'clase', 'entrada', 'gratis', 'gratuito', 'gratuita', 'aire libre', 'concierto', 'recital'];
+global.keywords = ['budapest', 'paris', 'prague']
+// global.keywords = ['rock', 'metal', 'grunge', 'hard rock', 'blues', 'jazz'];
 // function starttime2(){
 //   var date = new Date();
 //   date.setSeconds(0);
@@ -50,32 +50,32 @@ global.keywords = ['vicente lopez', 'jose c paz', 'acassuso', 'don torcuato', 'b
 
 var cronJob = require('cron').CronJob;
 
-var job = new cronJob('*/30 * * * *', function() {
-  var date = new Date();
-  console.log(date.toString());
+// var job = new cronJob('*/30 * * * *', function() {
+//   var date = new Date();
+//   console.log(date.toString());
 
-  fetchEventsFromKeywords();
-  // updatePopular();
+//   fetchEventsFromKeywords();
+//   // updatePopular();
 
-  // fetchEventsFromUsers();
-  // fetchEventsFromLocations();
-}, null, true);
+//   // fetchEventsFromUsers();
+//   // fetchEventsFromLocations();
+// }, null, true);
 
 // updateWeek();
 fetchEventsFromKeywords();
 // updatePrioritaires();
 // updatePopular();
 
-var send = require('./gcm');
+// var send = require('./gcm');
 
-var job = new cronJob('0 0 18 1/1 * ? *', function() {
+// var fridayJob = new cronJob('0 0 18 1/1 * ? *', function() {
 
-  Events.findOne({}, {
-    skip: random(1, 1000)
-  }, function(err, ev) {
-    send.send(ev);
-  });
-}, null, true);
+//   Events.findOne({}, {
+//     skip: random(1, 1000)
+//   }, function(err, ev) {
+//     send.send(ev);
+//   });
+// }, null, true);
 
 
 function random(min, max) {
@@ -310,6 +310,8 @@ function fetchEventsFromKeyword(term) {
     // timezone: "Europe/Paris",
     since: 'now'
   };
+
+  console.log(graph);
 
   graph.search(searchOptions, function(err, res) {
     if (err) {
