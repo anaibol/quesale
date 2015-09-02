@@ -311,8 +311,6 @@ function fetchEventsFromKeyword(term) {
     since: 'now'
   };
 
-  console.log(graph);
-
   graph.search(searchOptions, function(err, res) {
     if (err) {
       console.log(err);
@@ -331,9 +329,11 @@ function fetchEventsFromKeyword(term) {
 
         evs.forEach(function(ev) {
           eids.push(parseInt(ev.id));
+
+          Ev.fetch(eids, term, function(eves) {});
         });
 
-        Ev.fetchMultiple(eids, term, function(eves) {});
+        // Ev.fetchMultiple(eids, term, function(eves) {});
       }
     }
   });

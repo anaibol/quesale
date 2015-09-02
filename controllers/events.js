@@ -87,7 +87,7 @@ exports.get = function(req, res) {
   var skip = params.skip || 0;
   var sortBy = params.sortBy || 'proximity';
   var sortOrder = params.sortOrder || 1;
-  var since = params.since || 0;
+  var since = params.since;
   var until = params.until || 0;
 
   // if (params.sortBy === 'popularity') {
@@ -98,13 +98,14 @@ exports.get = function(req, res) {
   var sortStr = '{"' + sortBy + '" :' + sortOrder + '}';
   var sort = JSON.parse(sortStr);
 
-  since = new Date(since);
+  var query = {};
 
-  var query = {
-    start_time: {
+  if (since) {
+    since = new Date(since);
+    query.start_time = {
       $gte: since
     }
-  };
+  }
 
   if (params.lat && params.lng) {
     query['venue.coord'] = {

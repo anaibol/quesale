@@ -1,4 +1,5 @@
 var express = require('express');
+var cors = require('cors');
 var passport = require('passport');
 var session = require('express-session');
 var helpers = require('view-helpers');
@@ -29,6 +30,8 @@ global.controllersDir = rootDir + 'controllers/';
 global.config = require(configDir + '/env/' + process.env.NODE_ENV + '.js');
 
 var app = express();
+
+app.use(cors());
 
 global.db = require('monk')(config.db);
 global.Ev = require('./ev');

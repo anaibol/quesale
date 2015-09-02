@@ -148,220 +148,97 @@ function save(ev, cb) {
   }
 }
 
-function fetchMultiple(eids, term, cb) {
-  eids = eids.join(',');
-
-  var query = {
-    user_event: "SELECT description, feed_targeting, host, attending_count, eid, location, name, privacy, start_time, end_time, update_time, ticket_uri, venue, pic, pic_big, pic_small, pic_square, pic_cover, has_profile_pic, pic, creator, timezone FROM event WHERE eid IN (" + eids + ")",
-    // event_attending: "SELECT uid FROM event_member WHERE eid IN (SELECT eid FROM #user_event) and rsvp_status = 'attending' LIMIT 50000",
-  };
-
-  runQuery(query, function(data) {
-    if (data) {
-      if (data[0].fql_result_set) {
-        var evs = data[0].fql_result_set;
-
-        // var attendings = data[1].fql_result_set;
-
-        evs.forEach(function(ev) {
-          var eid = parseInt(ev.eid);
-
-          existsInDb(eid, function(exists) {
-            if (!exists) {
-              // ev.attending = [];
-
-              // for (j = 0; j < attendings.length; j++) {
-              //   ev.attending.push(parseInt(attendings[j].uid));
-              // }
-
-              if (ev.venue.country === 'Argentina') {
-                ev.query = term;
-                ev = normalize(ev);
-                ev.saved = new Date();
-                ev = normalize(ev);
-                save(ev, function(newEv) {
-                  console.log(newEv.query + ': ' + newEv.name);
-                });
-              }
-            } else if (exists) {
-              ev = normalize(ev);
-              //ev.updated = new Date();
-              //getAttendings(ev.eid, function(attendings) {
-              //ev.attending = attendings;
-              Events.update({
-                eid: ev.eid
-              }, {
-                $set: ev
-              });
-              //});
-            }
-          });
-        });
-        cb(evs);
-      } else {
-        cb(false);
-      }
-    } else {
-      cb(false);
-    }
-  });
-}
-
-// function fetchMultiple(eids, term, cb) {
-//   eids = eids.join(',');
-
 //   var query = {
 //     user_event: "SELECT description, feed_targeting, host, attending_count, eid, location, name, privacy, start_time, end_time, update_time, ticket_uri, venue, pic_cover, timezone FROM event WHERE eid IN (" + eids + ")",
 //     event_attending: "SELECT uid FROM event_member WHERE eid IN (SELECT eid FROM #user_event) and rsvp_status = 'attending' LIMIT 50000",
 //     event_photos: "SELECT images FROM photo WHERE object_id IN (SELECT pic_cover.cover_id FROM #user_event)",
-//     // event_creator: "SELECT name, id FROM profile WHERE id IN (SELECT creator FROM #user_event)"
-//   };
-
-//   runQuery(query, function(data) {
-//     if (data) {
-//       if (data[0].fql_result_set) {
-//         var evs = data[0].fql_result_set;
-
-//         var attendings = data[1].fql_result_set;
-//         var images = data[2].fql_result_set;
-//         // var creators = data[3].fql_result_set;
-
-//         for (i = 0; i < evs.length; i++) {
-//           ev = evs[i];
-
-//           ev.attending = [];
-//           for (j = 0; j < attendings.length; j++) {
-//             ev.attending.push(parseInt(attendings[j].uid));
-//           };
-
-//           if (images[i]) {
-//             ev.cover_images = images[i].images;
-//           }
-
-//           // ev.creator = creators[i];
-
-//           ev.query = term;
-
-//           ev = normalize(ev);
-
-//           Ev.save(ev, function(newEv) {
-//             console.log(newEv.query + ': ' + newEv.name);
-//           });
-//         };
-
-//         cb(evs);
-//       } else {
-//         cb(false);
-//       }
-//     } else {
-//       cb(false);
-//     }
-//   });
-// }
 
 function fetch(eid, term, cb) {
   eid = parseInt(eid);
 
   existsInDb(eid, function(exists) {
-    if (!exists) {
+    // if (!exists) {
       get(eid, term, function(ev) {
         if (ev) {
           ev.saved = new Date();
-
           save(ev, function(newEv) {
+            console.log(newEv);
             cb(newEv);
           });
         }
       });
-    } else {
-      Ev.update(eid, function(ev) {
-        cb(ev);
-      });
-    }
+    // } else {
+    //   update(eid, function(ev) {
+    //     cb(ev);
+    //   });
+    // }
   });
 }
-
-// function get(eid, term, cb) {
-//   eid = parseInt(eid);
-
-//   var query = {
-//     user_event: "SELECT description, feed_targeting, host, attending_count, eid, location, name, privacy, start_time, end_time, update_time, ticket_uri, venue, pic, pic_big, pic_small, pic_square, pic_cover, has_profile_pic, timezone FROM event WHERE eid =" + eid,
-//     event_attending: "SELECT uid FROM event_member WHERE eid IN (SELECT eid FROM #user_event) and rsvp_status = 'attending' LIMIT 50000",
-//     event_photos: "SELECT images FROM photo WHERE object_id IN (SELECT pic_cover.cover_id FROM #user_event)"
-//     // event_creator: "SELECT name, id FROM profile WHERE id IN (SELECT creator FROM #user_event)",
-//   };
-
-//   runQuery(query, function(data) {
-//     if (data) {
-//       if (data[0].fql_result_set[0]) {
-
-//         var ev = data[0].fql_result_set[0];
-//         var attendings = data[1].fql_result_set[0];
-//         var images = data[2].fql_result_set[0];
-
-//         ev.eid = eid;
-
-//         ev.attending = [];
-
-//         if (images[i]) {
-//           ev.cover_images = images[i].images;
-//         }
-
-//         // ev.creator = creators[i];
-
-//         ev.query = term;
-
-//         ev = normalize(ev);
-
-//         cb(ev);
-//       } else {
-//         cb(false);
-//       }
-//     } else {
-//       cb(false);
-//     }
-//   });
-// }
 
 function get(eid, term, cb) {
   eid = parseInt(eid);
 
-  var query = {
-    user_event: "SELECT description, feed_targeting, host, attending_count, eid, location, name, privacy, start_time, end_time, update_time, ticket_uri, venue, pic, pic_big, pic_small, pic_square, pic_cover, has_profile_pic, pic, creator, timezone FROM event WHERE eid =" + eid,
-    event_attending: "SELECT uid FROM event_member WHERE eid IN (SELECT eid FROM #user_event) and rsvp_status = 'attending' LIMIT 50000",
-    event_creator: "SELECT name, id FROM profile WHERE id IN (SELECT creator FROM #user_event)",
-  };
+  graph.get("/" + eid, function(err, res) {
+    if (err) {
+      console.log(err);
+    }
+    if (res) {
+      var ev = res;
+      ev.eid = eid;
 
-  runQuery(query, function(data) {
-    if (data) {
-      if (data[0].fql_result_set[0]) {
+      // var attending = data[1].fql_result_set;
 
-        ev = data[0].fql_result_set[0];
+      ev.attending = [];
 
-        ev.eid = eid;
+      ev.creator = '';
 
-        var attending = data[1].fql_result_set;
+      ev.query = term;
 
-        ev.attending = [];
+      ev = normalize(ev);
 
-        for (var i = attending.length - 1; i >= 0; i--) {
-          ev.attending.push(parseInt(attending[i].uid));
-        }
-
-        ev.creator = data[2].fql_result_set[0];
-
-        ev.query = term;
-
-        ev = normalize(ev);
-
-        cb(ev);
-      } else {
-        cb(false);
-      }
-    } else {
-      cb(false);
+      cb(ev);
+      // for (var i = attending.length - 1; i >= 0; i--) {
+      //   ev.attending.push(parseInt(attending[i].uid));
+      // }
     }
   });
+
+  // var query = {
+  //   user_event: "SELECT description, feed_targeting, host, attending_count, eid, location, name, privacy, start_time, end_time, update_time, ticket_uri, venue, pic, pic_big, pic_small, pic_square, pic_cover, has_profile_pic, pic, creator, timezone FROM event WHERE eid =" + eid,
+  //   event_attending: "SELECT uid FROM event_member WHERE eid IN (SELECT eid FROM #user_event) and rsvp_status = 'attending' LIMIT 50000",
+  //   event_creator: "SELECT name, id FROM profile WHERE id IN (SELECT creator FROM #user_event)",
+  // };
+
+  // runQuery(query, function(data) {
+  //   if (data) {
+  //     if (data[0].fql_result_set[0]) {
+
+  //       ev = data[0].fql_result_set[0];
+
+  //       ev.eid = eid;
+
+  //       var attending = data[1].fql_result_set;
+
+  //       ev.attending = [];
+
+  //       for (var i = attending.length - 1; i >= 0; i--) {
+  //         ev.attending.push(parseInt(attending[i].uid));
+  //       }
+
+  //       ev.creator = data[2].fql_result_set[0];
+
+  //       ev.query = term;
+
+  //       ev = normalize(ev);
+
+  //       cb(ev);
+  //     } else {
+  //       cb(false);
+  //     }
+  //   } else {
+  //     cb(false);
+  //   }
+  // });
 }
 
 function update(eid, cb) {
@@ -379,11 +256,11 @@ function update(eid, cb) {
   });
 }
 
-function updateMultiple(eids) {
-  fetchMultiple(eids, '', function(eves) {
-    var eids = [];
-  });
-}
+// function updateMultiple(eids) {
+//   fetchMultiple(eids, '', function(eves) {
+//     var eids = [];
+//   });
+// }
 
 function slug(str) {
   str = str.replace(/^\s+|\s+$/g, ''); // trim
@@ -406,10 +283,10 @@ function slug(str) {
 function normalize(ev) {
   ev.eid = parseInt(ev.eid);
 
-  ev.start_time2 = ev.start_time;
-  ev.end_time2 = ev.end_time;
-  ev.update_time2 = ev.update_time;
-  var NightLife = new Date(ev.start_time).getHours();
+  // ev.start_time2 = ev.start_time.toString();
+  // ev.end_time2 = ev.end_time.toString();
+  // ev.update_time2 = ev.update_time.toString();
+  // var NightLife = new Date(ev.start_time).getHours();
   // if (NightLife >= 21 || NightLife < 5)
   //   ev.categorie.push("NightLife");
   ev.start_time = new Date(ev.start_time);
@@ -447,7 +324,7 @@ function normalize(ev) {
     };
   }
 
-  ev = _.deepCompact(ev);
+  // ev = _.deepCompact(ev);
 
   // delete ev.pic_cover;
 
@@ -826,7 +703,7 @@ module.exports.fetch = fetch;
 module.exports.get = get;
 module.exports.save = save;
 module.exports.update = update;
-module.exports.updateMultiple = updateMultiple;
+// module.exports.updateMultiple = updateMultiple;
 module.exports.runQuery = runQuery;
 // module.exports.getTags = getTags;
 module.exports.getPrice = getPrice;
@@ -838,7 +715,7 @@ module.exports.getPriceFromFullPrice = getPriceFromFullPrice;
 module.exports.getFromUser = getFromUser;
 module.exports.updateAttendings = updateAttendings;
 module.exports.getAttendings = getAttendings;
-module.exports.fetchMultiple = fetchMultiple;
+// module.exports.fetchMultiple = fetchMultiple;
 module.exports.normalize = normalize;
 module.exports.existsInDb = existsInDb;
 // module.exports.convertDateToTimeZone = convertDateToTimeZone;
