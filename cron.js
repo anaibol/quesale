@@ -2,6 +2,8 @@ global.rootDir = __dirname + '/';
 global.configDir = rootDir + 'config';
 global.config = require(configDir + '/env/' + process.env.NODE_ENV + '.js');
 
+// var _ = require('lodash');
+
 var Ev = require('./ev');
 
 var db = require('monk')(config.db);
@@ -21,7 +23,7 @@ graph.setAccessToken(accessToken);
 var users = [];
 
 // global.keywords = ['vicente lopez', 'jose c paz', 'acassuso', 'don torcuato', 'balvanera', 'victoria', 'san miguel', 'tigre', 'martinez', 'la lucila', 'olivos', 'san isidro', 'buenos aires', 'palermo', 'belgrano', 'villa urquiza', 'colegiales', 'chacarita', 'villa crespo', 'rock', 'blues', 'metal', 'jazz', 'tango', 'swing', 'salsa', 'bachata', 'merengue', 'saavedra', 'caballito', 'san cristobal', 'moron', 'san justo', 'pacheco', 'villa ortuzar', 'festival', 'fiesta', 'curso', 'seminario', 'meetup', 'conferencia', 'charla', 'capital federal', 'clase', 'entrada', 'gratis', 'gratuito', 'gratuita', 'aire libre', 'concierto', 'recital'];
-global.keywords = ['budapest', 'paris', 'prague']
+global.keywords = ['zagreb']
 // global.keywords = ['rock', 'metal', 'grunge', 'hard rock', 'blues', 'jazz'];
 // function starttime2(){
 //   var date = new Date();
@@ -318,23 +320,23 @@ function fetchEventsFromKeyword(term) {
     }
 
     if (res.data) {
-      if (res.data.length) {
+      // if (res.data.length) {
         // if (res.paging && res.paging.next) {
         //   paginate(res.paging.next, term);
         // }
 
         var evs = res.data;
 
-        var eids = [];
+        // var eids = [];
 
         evs.forEach(function(ev) {
-          eids.push(parseInt(ev.id));
-
-          Ev.fetch(eids, term, function(eves) {});
+          // eids.push(parseInt(ev.id));
+          // eids = _.uniq(eids);
+          Ev.fetch(ev.id, term, function(eves) {});
         });
 
         // Ev.fetchMultiple(eids, term, function(eves) {});
-      }
+      // }
     }
   });
 }

@@ -157,7 +157,8 @@ function fetch(eid, term, cb) {
   eid = parseInt(eid);
 
   existsInDb(eid, function(exists) {
-    // if (!exists) {
+    if (!exists) {
+      console.log(eid);
       get(eid, term, function(ev) {
         if (ev) {
           ev.saved = new Date();
@@ -167,39 +168,48 @@ function fetch(eid, term, cb) {
           });
         }
       });
-    // } else {
-    //   update(eid, function(ev) {
-    //     cb(ev);
-    //   });
-    // }
+    } else {
+      update(eid, function(ev) {
+        cb(ev);
+      });
+    }
   });
 }
 
 function get(eid, term, cb) {
   eid = parseInt(eid);
 
-  graph.get("/" + eid, function(err, res) {
+  graph.get("/" + eid, function(err, ev) {
     if (err) {
       console.log(err);
     }
-    if (res) {
-      var ev = res;
+    if (ev) {
       ev.eid = eid;
 
-      // var attending = data[1].fql_result_set;
+      getPicture(ev.eid, function(picture) {
+        ev.picture = picture;
 
-      ev.attending = [];
+        getCover(ev.eid, function(cover) {
+          ev.cover = cover;
+          getAttendings(ev.eid, function(attending) {
+            ev.attending = [];
 
-      ev.creator = '';
+            for (var i = attending.length - 1; i >= 0; i--) {
+              ev.attending.push(parseInt(attending[i].uid));
+            }
 
-      ev.query = term;
+            ev.attending = [];
 
-      ev = normalize(ev);
+            ev.creator = '';
 
-      cb(ev);
-      // for (var i = attending.length - 1; i >= 0; i--) {
-      //   ev.attending.push(parseInt(attending[i].uid));
-      // }
+            ev.query = term;
+
+            ev = normalize(ev);
+
+            cb(ev);
+          });
+        });
+      });
     }
   });
 
@@ -283,9 +293,13 @@ function slug(str) {
 function normalize(ev) {
   ev.eid = parseInt(ev.eid);
 
-  // ev.start_time2 = ev.start_time.toString();
-  // ev.end_time2 = ev.end_time.toString();
-  // ev.update_time2 = ev.update_time.toString();
+  if (ev.id) {
+    delete ev.id;
+  }
+
+  ev.start_time2 = ev.start_time;
+  ev.end_time2 = ev.end_time;
+  ev.update_time2 = ev.update_time;
   // var NightLife = new Date(ev.start_time).getHours();
   // if (NightLife >= 21 || NightLife < 5)
   //   ev.categorie.push("NightLife");
@@ -303,13 +317,16 @@ function normalize(ev) {
 
   // ev.multi_date = Mul.getMultiDates(ev);
 
-  ev.venue.coord = {
-    lng: ev.venue.longitude,
-    lat: ev.venue.latitude
-  };
+  if (ev.venue) {
+    ev.venue.coord = {
+      lng: ev.venue.longitude,
+      lat: ev.venue.latitude
+    };
 
-  delete ev.venue.latitude;
-  delete ev.venue.longitude;
+    delete ev.venue.latitude;
+    delete ev.venue.longitude;
+  }
+
 
   if (!ev.venue || !ev.venue.coord || !ev.venue.coord.lng || !ev.venue.coord.lat) {
     ev.venue = {
@@ -369,22 +386,56 @@ function getAttendings(eid, cb) {
       }
     }
   });
+}
 
-  // var query = "SELECT uid FROM event_member WHERE rsvp_status = 'attending' AND eid=" + eid + " LIMIT 50000";
+function updateCover(eid, cb) {
+  getCover(eid, function(cover) {
+    Events.update({
+      eid: parseInt(eid)
+    }, {
+      $set: {
+        cover: cover
+      }
+    });
+    cb(cover);
+  });
+}
 
-  // graph.fql(query, function(err, result) {
-  //   if (err) {
-  //     console.log(err);
-  //   } else {
-  //     attendings = [];
+function getCover(eid, cb) {
+  graph.get("/" + eid + '?fields=cover', function(err, res) {
+    if (err) {
+      console.log(err);
+    }
+    if (res) {
+      if (res.cover) {
+        cb(res.cover);
+      }
+    }
+  });
+}
 
-  //     for (var i = result.data.length - 1; i >= 0; i--) {
-  //       attendings.push(parseInt(result.data[i].uid));
-  //     };
+function updatePicture(eid, cb) {
+  getPicture(eid, function(picture) {
+    Events.update({
+      eid: parseInt(eid)
+    }, {
+      $set: {
+        picture: picture
+      }
+    });
+    cb(picture);
+  });
 
-  //     cb(attendings);
-  //   }
-  // }
+}
+
+function getPicture(eid, cb) {
+  graph.get("/" + eid + '/picture', function(err, picture) {
+    if (err) {
+      console.log(err);
+    }
+
+    cb(picture);
+  });
 }
 
 function getFromUser(userName, accessToken, userLoggedIn, cb) {
