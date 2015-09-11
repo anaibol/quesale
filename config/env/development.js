@@ -1,7 +1,7 @@
 module.exports = {
   // db: "mongodb://localhost/quesale-dev",
   db: "mongodb://famosas.tv/quesale",
-  port: 3000,
+  port: 3001,
   app: {
     name: "Quesale - Development",
     accessToken: "1511193072439143|B3CXLPHQjOUyQ6Bu1wbdyLxJEwQ"

@@ -158,7 +158,7 @@ function fetch(eid, term, cb) {
 
   existsInDb(eid, function(exists) {
     if (!exists) {
-      console.log(eid);
+      // console.log(eid);
       get(eid, term, function(ev) {
         if (ev) {
           ev.saved = new Date();
