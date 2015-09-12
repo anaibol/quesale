@@ -179,7 +179,7 @@ function fetch(eid, term, cb) {
 function get(eid, term, cb) {
   eid = parseInt(eid);
 
-  graph.get("/" + eid, function(err, ev) {
+  graph.get("/" + eid + '?fields=cover,name,description,ticket_uri,owner,location,venue,attending', function(err, ev) {
     if (err) {
       console.log(err);
     }
@@ -189,16 +189,16 @@ function get(eid, term, cb) {
       getPicture(ev.eid, function(picture) {
         ev.picture = picture;
 
-        getCover(ev.eid, function(cover) {
-          ev.cover = cover;
-          getAttendings(ev.eid, function(attending) {
-            ev.attending = [];
+        // getCover(ev.eid, function(cover) {
+          // ev.cover = cover;
+          // getAttendings(ev.eid, function(attending) {
+            // ev.attending = [];
 
-            for (var i = attending.length - 1; i >= 0; i--) {
-              ev.attending.push(parseInt(attending[i].uid));
-            }
+            // for (var i = attending.length - 1; i >= 0; i--) {
+            //   ev.attending.push(parseInt(attending[i].uid));
+            // }
 
-            ev.attending = [];
+            // ev.attending = [];
 
             ev.creator = '';
 
@@ -207,9 +207,9 @@ function get(eid, term, cb) {
             ev = normalize(ev);
 
             cb(ev);
-          });
-        });
-      });
+        //   });
+        // });
+      // });
     }
   });
 
@@ -429,7 +429,7 @@ function updatePicture(eid, cb) {
 }
 
 function getPicture(eid, cb) {
-  graph.get("/" + eid + '/picture', function(err, picture) {
+  graph.get("/" + eid + '/picture?type=large', function(err, picture) {
     if (err) {
       console.log(err);
     }

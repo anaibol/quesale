@@ -23,7 +23,7 @@ graph.setAccessToken(accessToken);
 var users = [];
 
 // global.keywords = ['vicente lopez', 'jose c paz', 'acassuso', 'don torcuato', 'balvanera', 'victoria', 'san miguel', 'tigre', 'martinez', 'la lucila', 'olivos', 'san isidro', 'buenos aires', 'palermo', 'belgrano', 'villa urquiza', 'colegiales', 'chacarita', 'villa crespo', 'rock', 'blues', 'metal', 'jazz', 'tango', 'swing', 'salsa', 'bachata', 'merengue', 'saavedra', 'caballito', 'san cristobal', 'moron', 'san justo', 'pacheco', 'villa ortuzar', 'festival', 'fiesta', 'curso', 'seminario', 'meetup', 'conferencia', 'charla', 'capital federal', 'clase', 'entrada', 'gratis', 'gratuito', 'gratuita', 'aire libre', 'concierto', 'recital'];
-global.keywords = ['zagreb']
+global.keywords = ['metz']
 // global.keywords = ['rock', 'metal', 'grunge', 'hard rock', 'blues', 'jazz'];
 // function starttime2(){
 //   var date = new Date();
