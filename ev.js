@@ -189,10 +189,12 @@ function get(eid, term, cb) {
       getPicture(ev.eid, function(picture) {
         ev.picture = picture;
 
-        var attending = [];
+        if (ev.attending) {
+          var attending = [];
 
-        for (var i = attending.data.length - 1; i >= 0; i--) {
-          attending.push(parseInt(attending[i].uid));
+          for (var i = ev.attending.length - 1; i >= 0; i--) {
+            attending.push(parseInt(ev.attending[i].uid));
+          }
         }
 
         // getCover(ev.eid, function(cover) {
