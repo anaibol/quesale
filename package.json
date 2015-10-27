@@ -16,7 +16,7 @@
     "cors": "^2.7.1",
     "cron": "^1.0.9",
     "express": "^4.11.2",
-    "express-session": "^1.10.2",
+    "express-session": "^1.12.0",
     "fbgraph": "^0.3.0",
     "jade": "^1.9.2",
     "lodash": "^3.5.0",
