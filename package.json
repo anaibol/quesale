@@ -32,5 +32,8 @@
     "serve-static": "^1.8.1",
     "stylus": "^0.50.0",
     "view-helpers": "^0.1.5"
+  },
+  "devDependencies": {
+    "http-server": "^0.8.5"
   }
 }
